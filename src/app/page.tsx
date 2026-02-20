@@ -21,8 +21,15 @@ export default function Home() {
 
   useEffect(() => {
     fetch('/api/content')
-      .then(res => res.json())
-      .then(data => setContent(data));
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch content');
+        return res.json();
+      })
+      .then(data => setContent(data))
+      .catch(err => {
+        console.error('Error loading content:', err);
+        // We could set a retry or show a static fallback here if needed
+      });
   }, []);
 
   if (!content) return (
