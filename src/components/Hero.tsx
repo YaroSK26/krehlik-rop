@@ -51,7 +51,8 @@ export default function Hero({ title, subtitle }: HeroProps) {
               Preskúmať funkcie
             </motion.a>
             <motion.a
-              href="#tech"
+              target='_blank'
+              href="http://192.168.0.120:8080/stream"
               whileHover={{ scale: 1.05, background: 'rgba(255,255,255,0.1)' }}
               whileTap={{ scale: 0.95 }}
               className="glass"
@@ -64,7 +65,7 @@ export default function Hero({ title, subtitle }: HeroProps) {
                 textAlign: 'center'
               }}
             >
-              Technické detaily
+              Live demo
             </motion.a>
           </div>
         </motion.div>
