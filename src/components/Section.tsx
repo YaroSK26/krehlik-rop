@@ -12,7 +12,7 @@ interface SectionProps {
 
 export default function Section({ id, title, children, alternate }: SectionProps) {
   return (
-    <section id={id} className="container" style={{ padding: '6rem 0' }}>
+    <section id={id} className="container" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}

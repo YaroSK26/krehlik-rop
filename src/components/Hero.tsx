@@ -9,7 +9,7 @@ interface HeroProps {
 
 export default function Hero({ title, subtitle }: HeroProps) {
   return (
-    <section className="container" style={{ paddingTop: '10rem', paddingBottom: '6rem' }}>
+    <section className="container hero-section">
       <div className="hero-grid">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -36,23 +36,24 @@ export default function Hero({ title, subtitle }: HeroProps) {
             {title}
           </motion.h1>
           
-          <p style={{ fontSize: '1.4rem', color: 'var(--text-muted)', marginBottom: '3rem', maxWidth: '600px' }}>
+          <p className="hero-subtitle">
             {subtitle}
           </p>
 
           <div className="hero-buttons">
             <motion.a
-              href="#features"
+              href="http://192.168.0.120:8080/stream"
               whileHover={{ scale: 1.05, boxShadow: '0 0 30px var(--primary-glow)' }}
               whileTap={{ scale: 0.95 }}
               className="btn-primary"
               style={{ display: 'inline-block', textAlign: 'center' }}
             >
-              Preskúmať funkcie
+              Live demo
+              
             </motion.a>
             <motion.a
               target='_blank'
-              href="http://192.168.0.120:8080/stream"
+              href="#features"
               whileHover={{ scale: 1.05, background: 'rgba(255,255,255,0.1)' }}
               whileTap={{ scale: 0.95 }}
               className="glass"
@@ -65,7 +66,7 @@ export default function Hero({ title, subtitle }: HeroProps) {
                 textAlign: 'center'
               }}
             >
-              Live demo
+              Preskúmať funkcie
             </motion.a>
           </div>
         </motion.div>
@@ -102,6 +103,16 @@ export default function Hero({ title, subtitle }: HeroProps) {
       </div>
       
       <style jsx>{`
+        .hero-section {
+          padding-top: 10rem;
+          padding-bottom: 6rem;
+        }
+        .hero-subtitle {
+          font-size: 1.4rem;
+          color: var(--text-muted);
+          margin-bottom: 3rem;
+          max-width: 600px;
+        }
         .hero-grid {
           display: grid;
           grid-template-columns: 1.2fr 1fr;
@@ -131,13 +142,25 @@ export default function Hero({ title, subtitle }: HeroProps) {
             font-size: 3.5rem !important;
           }
         }
+        @media (max-width: 768px) {
+          .hero-section {
+            padding-top: 7rem;
+            padding-bottom: 4rem;
+          }
+          .hero-subtitle {
+            font-size: 1.1rem;
+          }
+          h1 {
+            font-size: 2.5rem !important;
+          }
+        }
         @media (max-width: 640px) {
           .hero-buttons {
             flex-direction: column;
             width: 100%;
           }
           h1 {
-            font-size: 2.8rem !important;
+            font-size: 2rem !important;
           }
         }
         @keyframes shimmer {

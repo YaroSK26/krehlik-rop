@@ -70,7 +70,7 @@ export default function Home() {
       </Section>
 
       <Section id="tech" title="Využité technológie" alternate>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '2rem', justifyContent: 'flex-end' }}>
+        <div className="tech-tags">
           {content.techShowcase.map((tech, i) => (
             <motion.span
               key={i}
@@ -88,7 +88,7 @@ export default function Home() {
             </motion.span>
           ))}
         </div>
-        <div style={{ marginTop: '3rem', fontSize: '1.2rem', color: 'var(--text-muted)', textAlign: 'right', maxWidth: '700px', marginLeft: 'auto' }}>
+        <div className="tech-description">
           <p style={{ lineHeight: 1.8 }}>Projekt využíva najnovší <span className="text-gradient" style={{ fontWeight: 800 }}>Raspberry Pi 5</span>, ktorý vďaka vylepšenému výkonu procesora a grafiky umožňuje plynulý video stream vo vysokom rozlíšení s minimálnym oneskorením.</p>
         </div>
       </Section>
@@ -132,7 +132,7 @@ export default function Home() {
       </Section>
 
       <footer className="container">
-        <div className="glass" style={{ padding: '4rem', textAlign: 'center', marginTop: '6rem', marginBottom: '4rem', borderBottom: 'none' }}>
+        <div className="glass footer-card" style={{ padding: '4rem', textAlign: 'center', marginTop: '6rem', marginBottom: '4rem', borderBottom: 'none' }}>
           <h2 className="text-gradient" style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '1.5rem' }}>Pripravení začať?</h2>
           <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem' }}>Pridajte sa k stovkám spokojných používateľov nášho systému.</p>
           <div style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>
@@ -147,13 +147,28 @@ export default function Home() {
       <style jsx>{`
         .features-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 2rem;
           margin-top: 3rem;
         }
+        .tech-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+          margin-top: 2rem;
+          justify-content: flex-end;
+        }
+        .tech-description {
+          margin-top: 3rem;
+          font-size: 1.2rem;
+          color: var(--text-muted);
+          text-align: right;
+          max-width: 700px;
+          margin-left: auto;
+        }
         .benefits-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 2.5rem;
         }
         .glow-orb {
@@ -167,10 +182,33 @@ export default function Home() {
           pointer-events: none;
         }
         @media (max-width: 768px) {
+          .features-grid {
+            grid-template-columns: 1fr;
+          }
+          .tech-tags {
+            justify-content: center;
+          }
+          .tech-description {
+            text-align: center;
+            margin-left: 0;
+            font-size: 1rem;
+          }
           .security-card {
-            padding: 2.5rem !important;
+            padding: 2rem 1.5rem !important;
           }
           .benefits-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+          }
+          .footer-card {
+            padding: 2.5rem 1.5rem !important;
+            margin-top: 3rem !important;
+            margin-bottom: 2rem !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .features-grid {
+            grid-template-columns: 1fr;
             gap: 1.5rem;
           }
         }

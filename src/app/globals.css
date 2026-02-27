@@ -34,6 +34,10 @@ html.lenis {
   overflow: hidden;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   color: var(--text);
   background: var(--background);
@@ -80,6 +84,13 @@ body {
   font-weight: 700;
   margin-bottom: 2rem;
   letter-spacing: -0.025em;
+}
+
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.8rem;
+    text-align: center !important;
+  }
 }
 
 .btn-primary {
@@ -142,4 +153,11 @@ input:focus, textarea:focus {
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   border: 1px solid var(--border);
+}
+
+@media (max-width: 768px) {
+  .sketchfab-wrapper {
+    aspect-ratio: 4/3;
+    max-height: 300px;
+  }
 }
