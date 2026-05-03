@@ -4,7 +4,87 @@ import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Section from '@/components/Section';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const PASSWORD = 'budka1234';
+const SESSION_KEY = 'krehik_auth';
+
+function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
+  const [value, setValue] = useState('');
+  const [error, setError] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (value === PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      onUnlock();
+    } else {
+      setError(true);
+      setValue('');
+      setTimeout(() => setError(false), 1500);
+    }
+  };
+
+  return (
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'var(--background)',
+      backgroundImage: 'radial-gradient(circle at 0% 0%, rgba(2, 202, 228, 0.15) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(167, 139, 250, 0.1) 0%, transparent 50%)',
+    }}>
+      <motion.form
+        onSubmit={handleSubmit}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="glass"
+        style={{ padding: '3rem', width: '100%', maxWidth: '420px', margin: '1.5rem' }}
+      >
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔒</div>
+          <h1 className="text-gradient" style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+            Sledovací Systém
+          </h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Zadajte heslo pre prístup</p>
+        </div>
+
+        <motion.div
+          animate={error ? { x: [-8, 8, -8, 8, 0] } : {}}
+          transition={{ duration: 0.4 }}
+        >
+          <input
+            type="password"
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            placeholder="Heslo..."
+            autoFocus
+            style={{
+              marginBottom: '1.2rem',
+              borderColor: error ? '#ef4444' : undefined,
+              boxShadow: error ? '0 0 15px rgba(239,68,68,0.3)' : undefined,
+            }}
+          />
+        </motion.div>
+
+        {error && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{ color: '#ef4444', fontSize: '0.85rem', marginBottom: '1rem', textAlign: 'center' }}
+          >
+            Nesprávne heslo
+          </motion.p>
+        )}
+
+        <button type="submit" className="btn-primary" style={{ width: '100%', padding: '0.9rem' }}>
+          Vstúpiť
+        </button>
+      </motion.form>
+    </div>
+  );
+}
 
 interface Content {
   title: string;
@@ -18,8 +98,14 @@ interface Content {
 
 export default function Home() {
   const [content, setContent] = useState<Content | null>(null);
+  const [unlocked, setUnlocked] = useState(false);
 
   useEffect(() => {
+    if (sessionStorage.getItem(SESSION_KEY) === '1') setUnlocked(true);
+  }, []);
+
+  useEffect(() => {
+    if (!unlocked) return;
     fetch('/api/content')
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch content');
@@ -28,9 +114,10 @@ export default function Home() {
       .then(data => setContent(data))
       .catch(err => {
         console.error('Error loading content:', err);
-        // We could set a retry or show a static fallback here if needed
       });
-  }, []);
+  }, [unlocked]);
+
+  if (!unlocked) return <PasswordGate onUnlock={() => setUnlocked(true)} />;
 
   if (!content) return (
     <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--background)' }}>
@@ -76,20 +163,62 @@ export default function Home() {
               key={i}
               whileHover={{ scale: 1.1 }}
               className="glass"
-              style={{ 
-                padding: '0.8rem 1.8rem', 
-                borderRadius: '3rem', 
-                fontWeight: 600, 
+              style={{
+                padding: '0.8rem 1.8rem',
+                borderRadius: '3rem',
+                fontWeight: 600,
                 fontSize: '1rem',
-                border: '1px solid var(--primary-glow)' 
+                border: '1px solid var(--primary-glow)'
               }}
             >
               {tech}
             </motion.span>
           ))}
         </div>
-        <div className="tech-description">
-          <p style={{ lineHeight: 1.8 }}>Projekt využíva najnovší <span className="text-gradient" style={{ fontWeight: 800 }}>Raspberry Pi 5</span>, ktorý vďaka vylepšenému výkonu procesora a grafiky umožňuje plynulý video stream vo vysokom rozlíšení s minimálnym oneskorením.</p>
+
+        <div className="tech-cards">
+          {[
+            {
+              icon: '🖥️',
+              name: 'Raspberry Pi 5',
+              desc: 'Srdce celého systému. Pi 5 beží na serveri, ovláda kameru a spracováva video v reálnom čase. Vďaka výkonnému procesoru zvládne kódovanie streamu s minimálnym oneskorením.',
+            },
+            {
+              icon: '📡',
+              name: 'WiFi 802.11',
+              desc: 'Pi 5 sa pripája k lokálnej sieti cez WiFi. Video stream sa prenáša bezdrátovo — bez nutnosti ťahať káble cez celú miestnosť.',
+            },
+            {
+              icon: '🔄',
+              name: 'MJPEG Stream',
+              desc: 'Video sa posiela ako séria JPEG obrázkov za sebou (Motion JPEG). Prehliadač ich zobrazuje jeden po druhom — jednoduchý protokol, žiadne špeciálne pluginy.',
+            },
+            {
+              icon: '🎨',
+              name: 'HTML5 Canvas',
+              desc: 'Prijatý MJPEG stream sa kreslí priamo na Canvas element v prehliadači. Umožňuje spracovanie obrazu na strane klienta — filtrovanie, zoom, detekcia pohybu.',
+            },
+            {
+              icon: '⚡',
+              name: 'WebSocket',
+              desc: 'Obojsmerný real-time kanál medzi Pi a prehliadačom. Slúži na odosielanie príkazov (napr. reštart kamery) a prijímanie stavových správ bez obnovy stránky.',
+            },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
+              whileHover={{ y: -6 }}
+              className="glass tech-card-item"
+            >
+              <div className="tech-card-icon">{item.icon}</div>
+              <div>
+                <h3 style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.5rem', color: 'var(--primary)' }}>{item.name}</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.7 }}>{item.desc}</p>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </Section>
 
@@ -158,13 +287,24 @@ export default function Home() {
           margin-top: 2rem;
           justify-content: flex-end;
         }
-        .tech-description {
+        .tech-cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1.5rem;
           margin-top: 3rem;
-          font-size: 1.2rem;
-          color: var(--text-muted);
-          text-align: right;
-          max-width: 700px;
-          margin-left: auto;
+        }
+        .tech-card-item {
+          display: flex;
+          gap: 1.2rem;
+          align-items: flex-start;
+          padding: 1.8rem;
+          border-top: 2px solid var(--secondary-glow);
+        }
+        .tech-card-icon {
+          font-size: 1.8rem;
+          min-width: 2.5rem;
+          text-align: center;
+          margin-top: 0.1rem;
         }
         .benefits-grid {
           display: grid;
